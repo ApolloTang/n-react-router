@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>React-Router</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="http://localhost:8001/css/lib/normalize&#45;2.1.2.css"> -->
+    <style media="screen" type="text/css">
+    </style>
+</head>
+
+<body>
+
+<div id='root'></div>
+
+<script src="http://localhost:8001/js/lib/lodash-v2.4.1.js"></script>
+<script src="http://localhost:8001/js/lib/babel-core--browser.js"></script>
+
+<script src="http://localhost:8001/js/lib/redux.js"></script>
+
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom-server.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom.js"></script>
+<!-- <script src="http://localhost:8001/js/lib/react&#45;0.14.6/build/react&#45;with&#45;addons.js"></script> -->
+<script src="http://localhost:8001/js/lib/react-router-v2.0.0-rc5.min.js"></script>
+<script src="http://localhost:8001/js/lib/History-v2.0.0-rc2.min.js"></script>
+
+<script src="http://localhost:8001/js/lib/expect.js"></script>
+<script src="http://localhost:8001/js/lib/deep-freeze.js"></script>
+
+
+<script type="text/babel">
+const { Router, Route, Link, browserHistory, IndexRoute } = ReactRouter;
+
+const Home = React.createClass({ render() { return ( <div> Home </div>) } });
+const About = React.createClass({ render() { return ( <div> About </div>) } });
+const InboxLayout = React.createClass({
+    render() {
+        return ( <div>
+            index layout
+            {this.props.children}
+        </div>);
+} });
+
+const InboxStats = React.createClass({
+    render() {
+        console.log('render inbox stats');
+        return ( <div> InboxStats </div>);
+    }
+});
+
+const Messages = React.createClass({ render() { return ( <div> Messages </div>) } });
+const Message = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log(this.props.params.id);
+        return (
+        <div>
+            Message {params.id}
+        </div>)
+    }
+});
+
+const App = React.createClass({
+    render() {
+        return (
+          <div>
+            app layout
+            <ul>
+              <li><Link to="/about">/about</Link></li>
+              <li><Link to="/inbox">/inbox</Link>
+                <ul>
+                  <li><Link to="/inbox/messages">/inbox/messages/</Link></li>
+                  <li><Link to="/inbox/messages/33">/Inbox/messages/33</Link></li>
+                  <li><Link to="/inbox/messages/44">/Inbox/messages/44</Link></li>
+                </ul>
+              </li>
+            </ul>
+            {this.props.children}
+          </div>
+        )
+    }
+});
+
+// Finally, we render a <Router> with some <Route>s.
+// It does all the fancy routing stuff for us.
+
+ReactDOM.render(
+    <Router history={browserHistory}>
+        <Route path="/" component={App}>
+          <IndexRoute component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/inbox" component={InboxLayout} >
+                <IndexRoute component={InboxStats}/>
+                <Route path="messages" component={Messages} />
+                <Route path="messages/:id" component={Message} />
+          </Route>
+        </Route>
+    </Router>,
+    document.getElementById('root')
+);
+</script>
+</body>
+
+</html>

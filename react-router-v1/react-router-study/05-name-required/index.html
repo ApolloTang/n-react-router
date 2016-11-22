@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>React-Router</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="http://localhost:8001/css/lib/normalize&#45;2.1.2.css"> -->
+    <style media="screen" type="text/css">
+    </style>
+</head>
+
+<body>
+
+<div id='root'></div>
+
+<script src="http://localhost:8001/js/lib/lodash-v3.10.1.js"></script>
+<script src="http://localhost:8001/js/lib/babel-core--browser.js"></script>
+
+<script src="http://localhost:8001/js/lib/redux.js"></script>
+
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom-server.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom.js"></script>
+<!-- <script src="http://localhost:8001/js/lib/react&#45;0.14.6/build/react&#45;with&#45;addons.js"></script> -->
+<script src="http://localhost:8001/js/lib/react-router-v2.0.0-rc5.min.js"></script>
+<script src="http://localhost:8001/js/lib/History-v2.0.0-rc2.min.js"></script>
+
+<script src="http://localhost:8001/js/lib/expect.js"></script>
+<script src="http://localhost:8001/js/lib/deep-freeze.js"></script>
+
+
+<script type="text/babel">
+
+// import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
+const { Router, Route, Link, browserHistory, IndexRoute } = ReactRouter;
+
+
+const A = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log('A', this.props.params.id );
+        return ( <div>A {params.id}</div>)
+    }
+});
+
+
+const B = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log('B', this.props.params.id );
+        return ( <div>B {params.id}</div>)
+    }
+});
+
+const Root = React.createClass({ render() { return ( <div> Root </div>); } });
+
+const App = React.createClass({
+    render() {
+        return (
+            <div>
+                <div>
+                    <div><Link to="/"            >/            </Link></div>
+                    <div><Link to="/a/b/1/d/2/b" >/a/b/1/d/2/b </Link></div>
+                    <div><Link to="/b"           >/b           </Link></div>
+                    <div><Link to="/"          >/   </Link></div>
+                    <div><Link to="/a/b/1/d/2"       >/a/b/1/d/2</Link></div>
+                    <div><Link to="/a/b/1/d"       >/a/b/1/d</Link></div>
+                </div>
+                <div style={{border:'1px solid red'}}> {this.props.children} </div>
+            </div>
+        )
+    }
+});
+
+
+const Nested1 = React.createClass({
+    render() {
+        return (
+            <div>
+                <p> Nested1 </p>
+                { JSON.stringify(this.props.params)}
+                <div>
+                </div>
+                <div style={{border:'1px solid blue'}}> {this.props.children} </div>
+            </div>
+        )
+    }
+});
+
+
+const R = React.createClass ({
+    render () {
+    return(
+    <div>
+        <div onClick={()=>{ window.history.replaceState(null, '', `/b` ) }}  >/b</div>
+        <Router
+            /* history={browserHistory} */
+            /* history={window.history} */
+            >
+            <Route path="/" component={App}>
+                {/* any of the componenet will goes into this.props.children of App1 */}
+                <IndexRoute component={Root} />
+                <Route path="/b"      component={A} />
+                <Route path="/b/:id"  component={A} />
+                <Route path="/b/:id"  component={A} />
+                <Route path="/a/b/:x/d" component={Nested1}>
+                    <IndexRoute component={Root} /> {/* <----------- this.props.children of App2 */}
+                </Route>
+            </Route>
+        </Router>
+    </div>
+    );
+    }
+});
+
+ReactDOM.render( <R/>, document.getElementById('root'));
+
+</script>
+</body>
+
+</html>

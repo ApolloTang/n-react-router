@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>React-Router</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="http://localhost:8001/css/lib/normalize&#45;2.1.2.css"> -->
+    <style media="screen" type="text/css">
+    </style>
+</head>
+
+<body>
+
+<div id='root'></div>
+
+<script src="http://localhost:8001/js/lib/lodash-v3.10.1.js"></script>
+<script src="http://localhost:8001/js/lib/babel-core--browser.js"></script>
+
+<script src="http://localhost:8001/js/lib/redux.js"></script>
+
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom-server.js"></script>
+<script src="http://localhost:8001/js/lib/react-0.14.6/build/react-dom.js"></script>
+<!-- <script src="http://localhost:8001/js/lib/react&#45;0.14.6/build/react&#45;with&#45;addons.js"></script> -->
+<script src="http://localhost:8001/js/lib/react-router-v2.0.0-rc5.min.js"></script>
+<script src="http://localhost:8001/js/lib/History-v2.0.0-rc2.min.js"></script>
+
+<script src="http://localhost:8001/js/lib/expect.js"></script>
+<script src="http://localhost:8001/js/lib/deep-freeze.js"></script>
+
+
+<script type="text/babel">
+
+// import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
+const { Router, Route, Link, browserHistory, IndexRoute } = ReactRouter;
+
+
+const Image = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log(this.props.params.id, 'image');
+        return ( <div>{params.id} Image</div>)
+    }
+});
+
+const Map = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log(this.props.params.id, 'map');
+        return ( <div>{params.id} Map</div>)
+    }
+});
+
+const Favorite = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log(this.props.params.id);
+        return ( <div>Favorite {params.id}</div>)
+    }
+});
+
+const Poi = React.createClass({
+    render() {
+        const {params} = this.props;
+        console.log(this.props.params.id);
+        return ( <div>point of interest {params.id}</div>)
+    }
+});
+
+const Pois = React.createClass({ render() { return ( <div> poi index </div>) } });
+const Logout = React.createClass({ render() { return ( <div> logout </div>) } });
+const Root = React.createClass({ render() { return ( <div> Root </div>); } });
+
+const App = React.createClass({
+    onLogoutClicked() {
+        console.log('lockout', this)
+        this.props.history.pushState(null, '/logout');
+    },
+    onPoiClicked() {
+        console.log('poi', this)
+        this.props.history.pushState(null, '/poi' );
+    },
+
+    onFavoriteClicked() {
+        console.log('favorite')
+        this.props.history.pushState(null, '/favorite' );
+    },
+
+    onImageClicked() {
+        console.log(this.props);
+        console.log('image')
+        const id = _.get(this.props, `params.id`, 0);
+        this.props.history.pushState(null, `/favorite/${id}/image` );
+    },
+
+    onMapClicked() {
+        console.log('map')
+        const id = _.get(this.props, `params.id`, 0);
+        this.props.history.pushState(null, `/favorite/${id}/map` );
+    },
+
+    render() {
+        return (
+            <div>
+                <p> app layout </p>
+                <div>
+                    <button onClick={this.onLogoutClicked}>logout</button>
+                    <button onClick={this.onPoiClicked}>poi</button>
+                    <button onClick={this.onFavoriteClicked}>favorite</button>
+                </div>
+                <div>
+                    <div><Link to="/poi"          >/poi/</Link></div>
+                    <div><Link to="/poi/33"       >/poi/33</Link></div>
+                    <div><Link to="/poi/44"       >/poi/44</Link></div>
+                    <div><Link to="/poi/33/map"   >/poi/33/map</Link></div>
+                    <div><Link to="/poi/33/image" >/poi/33/image</Link></div>
+                    <div><Link to="/poi/44/map"   >/poi/44/map</Link></div>
+                    <div><Link to="/poi/44/image" >/poi/44/image</Link></div>
+                </div>
+
+                <div>------------------------ </div>
+                <div>
+                    <div><Link to="/favorite/33">/Favorite/33</Link></div>
+                    <div><Link to="/favorite/44">/Favorite/44</Link></div>
+                </div>
+                <div>
+                    <button onClick={this.onMapClicked}>map</button>
+                    <button onClick={this.onImageClicked}>images</button>
+                </div>
+                <div> {this.props.children} </div>
+            </div>
+        )
+    }
+});
+
+const R = () =>{
+    return(
+        <Router history={browserHistory}>
+            <Route path="/" component={App}>
+                <IndexRoute component={Root} />
+                <Route path="/logout" component={Logout} />
+                <Route path="/poi" component={Pois} />
+                <Route path="/poi/:id" component={Poi} />
+                <Route path="/poi/:id/map" component={Map} />
+                <Route path="/poi/:id/image" component={Image} />
+                <Route path="/favorite" component={Favorite} />
+                <Route path="/favorite/:id" component={Favorite} />
+                <Route path="/favorite/:id/image" component={Image} />
+            </Route>
+        </Router>
+    )
+};
+
+ReactDOM.render( <R/>, document.getElementById('root'));
+
+</script>
+</body>
+
+</html>
